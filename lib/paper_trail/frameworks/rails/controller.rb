@@ -73,6 +73,13 @@ module PaperTrail
         end
       end
 
+      # Tells PaperTrail which customer owns the changes.
+      def set_paper_trail_customer_id
+        if ::PaperTrail.enabled_for_controller?
+          ::PaperTrail.customer_id = user_for_paper_trail.try(:customer_id)
+        end
+      end
+
       # Tells PaperTrail any information from the controller you want to store
       # alongside any changes that occur.
       def set_paper_trail_controller_info

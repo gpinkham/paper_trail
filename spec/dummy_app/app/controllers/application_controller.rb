@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   # it themsevles, like this, allowing them to control the order of callbacks.
   # The `modify_current_user` callback above shows why this control is useful.
   before_action :set_paper_trail_whodunnit
+  before_action :set_paper_trail_customer_id
 
   def rescue_action(e)
     raise e

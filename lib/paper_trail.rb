@@ -98,6 +98,14 @@ module PaperTrail
       paper_trail_store[:whodunnit] = value
     end
 
+    # Sets customer that owns the changes. You would normally use
+    # this in a migration or on the console, when working with models directly.
+    # In a controller it is set automatically to the `current_user.customer_id`.
+    # @api public
+    def customer_id=(value)
+      paper_trail_store[:customer_id] = value
+    end
+
     # If nothing passed, returns who is reponsible for any changes that occur.
     #
     #   PaperTrail.whodunnit = "someone"

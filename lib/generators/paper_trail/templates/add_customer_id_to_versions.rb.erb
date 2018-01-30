@@ -1,0 +1,8 @@
+# This migration adds the optional `customer_id` column.  This will 
+# support multi-tenancy in the papertrail gem.
+class AddCustomerIdToVersions < ActiveRecord::Migration<%= migration_version %>
+
+  def change
+    add_column :versions, :customer_id, :integer
+  end
+end

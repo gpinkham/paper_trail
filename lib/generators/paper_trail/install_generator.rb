@@ -36,6 +36,7 @@ module PaperTrail
     def create_migration_file
       add_paper_trail_migration("create_versions")
       add_paper_trail_migration("add_object_changes_to_versions") if options.with_changes?
+      add_paper_trail_migration("add_customer_id_to_versions") if options.with_changes?
       if options.with_associations?
         add_paper_trail_migration("create_version_associations")
         add_paper_trail_migration("add_transaction_id_column_to_versions")
