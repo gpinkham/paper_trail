@@ -220,7 +220,8 @@ module PaperTrail
     def data_for_create
       data = {
         event: @record.paper_trail_event || "create",
-        whodunnit: PaperTrail.whodunnit
+        whodunnit: PaperTrail.whodunnit,
+        customer_id: PaperTrail.customer_id
       }
       if @record.respond_to?(:updated_at)
         data[:created_at] = @record.updated_at
@@ -254,7 +255,9 @@ module PaperTrail
         item_type: @record.class.base_class.name,
         event: @record.paper_trail_event || "destroy",
         object: recordable_object,
-        whodunnit: PaperTrail.whodunnit
+        whodunnit: PaperTrail.whodunnit,
+        customer_id: PaperTrail.customer_id
+
       }
       add_transaction_id_to(data)
       merge_metadata_into(data)
@@ -290,7 +293,8 @@ module PaperTrail
       data = {
         event: @record.paper_trail_event || "update",
         object: recordable_object,
-        whodunnit: PaperTrail.whodunnit
+        whodunnit: PaperTrail.whodunnit,
+        customer_id: PaperTrail.customer_id
       }
       if @record.respond_to?(:updated_at)
         data[:created_at] = @record.updated_at
@@ -321,7 +325,8 @@ module PaperTrail
       data = {
         event: @record.paper_trail_event || "update",
         object: recordable_object,
-        whodunnit: PaperTrail.whodunnit
+        whodunnit: PaperTrail.whodunnit,
+        customer_id: PaperTrail.customer_id
       }
       if record_object_changes?
         data[:object_changes] = recordable_object_changes(changes)
@@ -497,6 +502,17 @@ module PaperTrail
       yield @record
     ensure
       PaperTrail.whodunnit = current_whodunnit
+    end
+
+    # Temporarily overwrites the value of customer_id and then executes the
+    # provided block.
+    def customer_id(value)
+      raise ArgumentError, "expected to receive a block" unless block_given?
+      current_customer_id = PaperTrail.customer_id
+      PaperTrail.customer_id = value
+      yield @record
+    ensure
+      PaperTrail.customer_id = current_customer_id
     end
 
     private
