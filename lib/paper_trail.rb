@@ -137,6 +137,38 @@ module PaperTrail
       end
     end
 
+        # If nothing passed, returns which customer owns these changes
+    #
+    #   PaperTrail.customer_id = 1
+    #   PaperTrail.customer_id # => 1
+    #
+    # If value and block passed, set this value as customer_id for the duration of the block
+    #
+    #   PaperTrail.customer_id(1) do
+    #     puts PaperTrail.customer_id # => 1
+    #   end
+    #
+    # @api public
+    def customer_id(value = nil)
+      if value
+        raise ArgumentError, "no block given" unless block_given?
+
+        previous_customer_id = paper_trail_store[:customer_id]
+        paper_trail_store[:customer_id] = value
+
+        begin
+          yield
+        ensure
+          paper_trail_store[:customer_id] = previous_customer_id
+        end
+      elsif paper_trail_store[:customer_id].respond_to?(:call)
+        paper_trail_store[:customer_id].call
+      else
+        paper_trail_store[:customer_id]
+      end
+    end
+
+
     # Sets any information from the controller that you want PaperTrail to
     # store.  By default this is set automatically by a before filter.
     # @api public
